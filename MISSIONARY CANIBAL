@@ -1,0 +1,47 @@
+from collections import deque
+
+def solve_mc():
+    start, goal, moves = (3, 3, 1), (0, 0, 0), [(1, 0), (2, 0), (0, 1), (0, 2), (1, 1)] 
+    
+    
+    def is_safe(m, c):
+        m_other, c_other = 3 - m, 3 - c
+        return (m >= c or m == 0) and (m_other >= c_other or m_other == 0)
+
+    
+    queue = deque([(start, [start])])
+    visited = {start}
+    
+    while queue:
+        (m, c, b), path = queue.popleft()
+        
+        if (m, c, b) == goal:
+            return path
+            
+      
+        d, nb = 1 if b == 1 else -1, 1 - b 
+        
+        for dm, dc in moves:
+            nm, nc = m - d * dm, c - d * dc
+            new_state = (nm, nc, nb)
+            
+            
+            if not (0 <= nm <= 3 and 0 <= nc <= 3 and is_safe(nm, nc)):
+                continue
+
+           
+            if new_state not in visited:
+                visited.add(new_state)
+                queue.append((new_state, path + [new_state]))
+                
+    return None
+
+solution = solve_mc()
+
+if solution:
+    print("✅ Shortest 11-Step Solution Path:")
+    print("Format: (M_on_A, C_on_A, Boat_at_A)")
+    for i, state in enumerate(solution):
+        print(f"Step {i:02}: {state}")
+else:
+    print("❌ No solution found.")
