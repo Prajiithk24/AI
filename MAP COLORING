@@ -1,0 +1,61 @@
+def map_coloring_csp(colors, neighbors):
+    regions = list(neighbors.keys())
+    
+   
+    state = {} 
+
+    def is_safe(region, color, current_state):
+        for neighbor in neighbors[region]:
+            if neighbor in current_state and current_state[neighbor] == color:
+                return False
+        return True
+
+    def backtrack_search(region_index):
+        """Recursive backtracking function."""
+        if region_index == len(regions):
+            return True
+
+        current_region = regions[region_index]
+
+
+        for color in colors:
+            if is_safe(current_region, color, state):
+                
+                state[current_region] = color
+
+               
+                if backtrack_search(region_index + 1):
+                    return True
+                    
+                del state[current_region]
+                
+        
+        return False
+
+    if backtrack_search(0):
+        return state
+    else:
+        return None
+
+
+DOMAIN_COLORS = ['Red', 'Green', 'Blue']
+
+
+ADJACENCY_MAP = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': [] 
+}
+
+solution = map_coloring_csp(DOMAIN_COLORS, ADJACENCY_MAP)
+
+if solution:
+    print("✅ Solution Found:")
+    for region, color in solution.items():
+        print(f"{region}: {color}")
+else:
+    print("❌ No solution exists with the given colors.")
