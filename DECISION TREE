@@ -1,0 +1,48 @@
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.tree import plot_tree # For visualization
+
+# 1. Load Data
+iris = load_iris()
+X = iris.data  # Features
+y = iris.target # Target (Species)
+feature_names = iris.feature_names
+target_names = iris.target_names
+
+# 2. Split Data (Optional but good practice)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# 3. Initialize and Train the Model
+# criterion='entropy' uses Information Gain for splitting
+# max_depth=3 keeps the tree simple and interpretable
+clf = DecisionTreeClassifier(criterion='entropy', max_depth=3, random_state=42)
+clf.fit(X_train, y_train)
+
+# 4. Evaluate (Simple accuracy)
+accuracy = clf.score(X_test, y_test)
+print(f"Model Accuracy: {accuracy:.2f}")
+
+# 5. Visualize the Tree (Requires matplotlib)
+print("\n--- Decision Tree Visualization ---")
+# To see the actual plot, you would run this in an environment like Jupyter Notebook
+# or save the figure.
+plt.figure(figsize=(12, 8))
+plot_tree(
+    clf,
+    feature_names=feature_names,
+    class_names=target_names,
+    filled=True,
+    rounded=True
+)
+plt.show() 
+# 
+
+# Example: Make a prediction
+new_data = np.array([[5.0, 3.5, 1.5, 0.2]]) # A new flower measurement
+prediction = clf.predict(new_data)
+predicted_species = target_names[prediction[0]]
+print(f"\nPrediction for {new_data[0]}: {predicted_species}")
