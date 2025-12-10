@@ -1,0 +1,8 @@
+from itertools import permutations
+for p in permutations(range(8)):
+    if all(abs(p[i] - p[j]) != abs(i - j) for i in range(8) for j in range(i)):
+        for row in range(8):
+            line = ['.'] * 8
+            line[p[row]] = 'Q'
+            print(' '.join(line))
+        break
