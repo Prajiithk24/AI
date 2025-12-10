@@ -1,0 +1,55 @@
+import math
+
+def tsp_nearest_neighbor(cities, dist_matrix, start_city):
+
+    if start_city not in cities:
+        raise ValueError("start_city must be in cities")
+
+    num_cities = len(cities)
+    visited = {start_city}           
+    tour = [start_city]
+    current = start_city
+    total = 0.0
+
+    while len(visited) < num_cities:
+        nearest = None
+        nearest_dist = math.inf
+
+        for city in cities:
+            if city in visited:
+                continue
+            d = dist_matrix[current].get(city, math.inf)
+            if d < nearest_dist:
+                nearest_dist = d
+                nearest = city
+
+        if nearest is None or nearest_dist == math.inf:
+            raise ValueError(f"City {current} cannot reach any remaining unvisited city.")
+
+        visited.add(nearest)
+        tour.append(nearest)
+        total += nearest_dist
+        current = nearest
+
+    back_dist = dist_matrix[current].get(start_city, math.inf)
+    if back_dist == math.inf:
+        raise ValueError(f"Cannot return from {current} to {start_city} (distance missing).")
+
+    total += back_dist
+    tour.append(start_city)
+
+    return total, tour
+
+
+
+CITIES = ['A', 'B', 'C', 'D']
+DIST_MATRIX = {
+    'A': {'A': 0, 'B': 10, 'C': 15, 'D': 20},
+    'B': {'A': 10, 'B': 0, 'C': 35, 'D': 25},
+    'C': {'A': 15, 'B': 35, 'C': 0, 'D': 30},
+    'D': {'A': 20, 'B': 25, 'C': 30, 'D': 0}
+}
+
+approx_distance, approx_route = tsp_nearest_neighbor(CITIES, DIST_MATRIX, 'A')
+print("Approximate Distance:", approx_distance)
+print("Approximate Route:", approx_route)
